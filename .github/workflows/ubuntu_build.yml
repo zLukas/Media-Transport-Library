@@ -51,6 +51,9 @@ jobs:
           egress-policy: audit
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: OpenVisualCloud/Media-Transport-Library
+          ref: 25.02-rc2
       - uses: DoozyX/clang-format-lint-action@v0.18.2
         with:
           clangFormatVersion: '14'
