@@ -1,13 +1,5 @@
-# INTEL CONFIDENTIAL
-# Copyright 2024-2024 Intel Corporation.
-#
-# This software and the related documents are Intel copyrighted materials, and your use of them is governed
-# by the express license under which they were provided to you ("License"). Unless the License provides otherwise,
-# you may not use, modify, copy, publish, distribute, disclose or transmit this software or the related documents
-# without Intel's prior written permission.
-#
-# This software and the related documents are provided as is, with no express or implied warranties,
-# other than those that are expressly stated in the License.
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright(c) 2024-2025 Intel Corporation
 import logging
 
 import pytest
@@ -34,3 +26,14 @@ def SDBQ1002_pg_format_error_check(video_format: str, pg_format: str, request):
             "XFAIL: SDBQ-1002 - Video, i720p50fps with V210 pg_format Error: tv_frame_free_cb",
             request,
         )
+
+
+def SDBQ1971_conversion_v210_720p_error(
+    video_format: str, resolution_width: int, request
+):
+    if video_format == "v210" and resolution_width == 720:
+        add_issue(
+            "XFAIL: SDBQ-1971 - Conversion from v210 format does not work on 720p",
+            request,
+        )
+        assert False

@@ -1,13 +1,5 @@
-# INTEL CONFIDENTIAL
-# Copyright 2024-2024 Intel Corporation.
-#
-# This software and the related documents are Intel copyrighted materials, and your use of them is governed
-# by the express license under which they were provided to you ("License"). Unless the License provides otherwise,
-# you may not use, modify, copy, publish, distribute, disclose or transmit this software or the related documents
-# without Intel's prior written permission.
-#
-# This software and the related documents are provided as is, with no express or implied warranties,
-# other than those that are expressly stated in the License.
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright(c) 2024-2025 Intel Corporation
 
 import os
 
@@ -31,14 +23,9 @@ from tests.Engine.media_files import yuv_files
         "i4320p59",
     ],
 )
-def test_perf_1tx_1rx_2nics(build, media, nic_port_list, test_time, video_format):
-    # Increase time for 4k and 8k streams
-    if "2160" in video_format:
-        test_time = 60
-    elif "4320" in video_format:
-        test_time = 120
-
+def test_perf_1tx_1nic_1port(build, media, nic_port_list, test_time, video_format):
     video_file = yuv_files[video_format]
+
     config = rxtxapp.create_empty_performance_config()
     config = rxtxapp.add_perf_video_session_tx(
         config=config,
@@ -49,14 +36,6 @@ def test_perf_1tx_1rx_2nics(build, media, nic_port_list, test_time, video_format
         pg_format=video_file["format"],
         video_url=os.path.join(media, video_file["filename"]),
     )
-    config = rxtxapp.add_perf_video_session_rx(
-        config=config,
-        nic_port=nic_port_list[1],
-        ip="192.168.17.102",
-        sip="239.168.48.9",
-        video_format=video_format,
-        pg_format=video_file["format"],
-    )
 
     # upper bound
     replicas_b = 1
@@ -64,7 +43,7 @@ def test_perf_1tx_1rx_2nics(build, media, nic_port_list, test_time, video_format
     # find upper bound
     while True:
         config = rxtxapp.change_replicas(
-            config=config, session_type="video", replicas=replicas_b, rx=False
+            config=config, session_type="video", replicas=replicas_b
         )
         passed = rxtxapp.execute_perf_test(
             config=config, build=build, test_time=test_time, fail_on_error=False
@@ -90,7 +69,7 @@ def test_perf_1tx_1rx_2nics(build, media, nic_port_list, test_time, video_format
             break
 
         config = rxtxapp.change_replicas(
-            config=config, session_type="video", replicas=replicas_midpoint, rx=False
+            config=config, session_type="video", replicas=replicas_midpoint
         )
         passed = rxtxapp.execute_perf_test(
             config=config, build=build, test_time=test_time, fail_on_error=False
